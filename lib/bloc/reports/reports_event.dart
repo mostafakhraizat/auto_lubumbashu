@@ -11,3 +11,7 @@ class GenerateReportEvent extends ReportsEvent {
   GenerateReportEvent(
       {required this.formInputViewModel, required this.context});
 }
+class DeleteReportEvent extends ReportsEvent{
+  String reportPath;
+  DeleteReportEvent(this.reportPath);
+}

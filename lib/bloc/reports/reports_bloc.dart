@@ -24,7 +24,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<ReportScreenInitialEvent>((event, emit) async {
       emit(ReportsListSuccessState(await allReports()));
     });
-
+    on<DeleteReportEvent>((event, emit) async{
+      var reports = await allReports();
+      reports.removeWhere((element) => element.path==event.reportPath);
+      writeReports(reports);
+      emit(ReportsInitial());
+    });
     on<GenerateReportEvent>((event, emit) async {
       showDialog(
           context: event.context,
@@ -356,7 +361,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       //     build: (pw.Context context) => widgets));
       final directory = await getExternalStorageDirectory();
       String newPath = path.join(directory!.path,
-          "PDF-${formInputViewModel.formInput.dnn.toString()}_${DateTime.now().toString().substring(0, 16)}.pdf");
+          "PDF-${formInputViewModel.formInput.dnn.toString()}_${DateTime.now().toString()}.pdf");
       final file = File(newPath);
       await file.writeAsBytes(await pdf.save());
       return file;

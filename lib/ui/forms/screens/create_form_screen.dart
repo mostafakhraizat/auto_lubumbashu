@@ -121,242 +121,255 @@ class _CreateFormScreenState extends State<CreateFormScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
-      floatingActionButton:_tabController.index==0? FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            formDataList.add(
-                FormItem(description: "", oldImagePath: "", newImagePath: ""));
-            pressedItems.fillRange(0, pressedItems.length, false);
-            pressedItems.add(true);
-          });
-        },
-        backgroundColor: MyAppTheme.primaryRed,
-        tooltip: "Add Form Item",
-        child: const Icon(Icons.add),
-      ):null,
+      floatingActionButton: _tabController.index == 0
+          ? FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  formDataList.add(FormItem(
+                      description: "", oldImagePath: "", newImagePath: ""));
+                  pressedItems.fillRange(0, pressedItems.length, false);
+                  pressedItems.add(true);
+                });
+              },
+              backgroundColor: MyAppTheme.primaryRed,
+              tooltip: "Add Form Item",
+              child: const Icon(Icons.add),
+            )
+          : null,
       appBar: AppBar(
         elevation: 0,
         title: Text(widget.form == null ? "Create Form" : "Edit Form"),
         actions: [
-          TextButton(
+          // TextButton(
+          //     onPressed: () {
+          //       showMenu(
+          //           context: context,
+          //           position: const RelativeRect.fromLTRB(100, 0, 0, 0),
+          //           items: widget.form == null
+          //               ? [
+          //                   PopupMenuItem(
+          //                     child: const Text('Forms History'),
+          //                     onTap: () async {
+          //                       Navigator.of(context).push(MaterialPageRoute(
+          //                           builder: (c) => const SavedFormsScreen()));
+          //                     },
+          //                   ),
+          //                   PopupMenuItem(
+          //                     child: Row(
+          //                       mainAxisAlignment:
+          //                           MainAxisAlignment.spaceBetween,
+          //                       children: const [
+          //                         Text(
+          //                           "Save Form",
+          //                           style: TextStyle(),
+          //                         ),
+          //                       ],
+          //                     ),
+          //                     onTap: () async {
+          //                       try {
+          //                         var rootPath =
+          //                             await getApplicationDocumentsDirectory();
+          //                         //get forms file
+          //                         File forms =
+          //                             File("${rootPath.path}/forms.json");
+          //                         //read forms in string var
+          //                         String formsDataString =
+          //                             forms.readAsStringSync();
+          //                         log(formsDataString);
+          //                         //convert the json list into FormData List
+          //                         Iterable iter = jsonDecode(formsDataString);
+          //                         //data list is all forms in forms.json
+          //                         List<FormData> formsDataList =
+          //                             List<FormData>.from(iter.map(
+          //                                 (model) => FormData.fromJson(model)));
+          //                         //saved data is the current formData item
+          //                         FormData savedData = FormData(
+          //                             formId: formId,
+          //                             inputId: int.parse(
+          //                                 widget.input.inputId.toString()),
+          //                             formItems: formDataList);
+          //
+          //                         //check existing data item
+          //                         var existingItem = formsDataList.where(
+          //                             (element) => element.formId == formId);
+          //                         if (existingItem.isNotEmpty) {
+          //                           savedData = existingItem.first;
+          //
+          //                           savedData.formItems = formDataList;
+          //
+          //                           forms.writeAsString(
+          //                               jsonEncode(formsDataList));
+          //                         } else {
+          //                           formsDataList.add(savedData);
+          //                           forms.writeAsString(
+          //                               jsonEncode(formsDataList));
+          //                         }
+          //                         //save inputs
+          //
+          //                         File inputs =
+          //                             File("${rootPath.path}/inputs.json");
+          //                         //read forms in string var
+          //                         String inputsString =
+          //                             inputs.readAsStringSync();
+          //                         log(inputsString);
+          //                         //convert the json list into FormData List
+          //                         Iterable inputIter = jsonDecode(inputsString);
+          //                         //data list is all forms in forms.json
+          //                         List<FormInput> allInputs =
+          //                             List<FormInput>.from(inputIter.map(
+          //                                 (model) =>
+          //                                     FormInput.fromJson(model)));
+          //                         FormInput input = allInputs
+          //                             .where((element) =>
+          //                                 element.inputId ==
+          //                                 widget.input.inputId)
+          //                             .first;
+          //                         input.customer = customer;
+          //                         input.siteName = siteName;
+          //                         input.dnn = deliveryNoteNumber.text;
+          //                         input.hoseAssembler =
+          //                             hoseAssemblerController.text;
+          //                         input.requisitionNb =
+          //                             requisitionNbController.text;
+          //                         input.date = dateText.text;
+          //                         inputs.writeAsString(jsonEncode(allInputs));
+          //
+          //                         ScaffoldMessenger.of(context)
+          //                             .showSnackBar(const SnackBar(
+          //                                 backgroundColor: Colors.green,
+          //                                 content: Text(
+          //                                   "Form saved successfully",
+          //                                   style:
+          //                                       TextStyle(color: Colors.white),
+          //                                 )));
+          //                       } on Exception catch (e, s) {
+          //                         print(s);
+          //                         ScaffoldMessenger.of(context).showSnackBar(
+          //                             SnackBar(content: Text(e.toString())));
+          //                       }
+          //                     },
+          //                   ),
+          //                 ]
+          //               : [
+          //                   PopupMenuItem(
+          //                     child: Row(
+          //                       mainAxisAlignment:
+          //                           MainAxisAlignment.spaceBetween,
+          //                       children: const [
+          //                         Text(
+          //                           "Save Form",
+          //                           style: TextStyle(),
+          //                         ),
+          //                       ],
+          //                     ),
+          //                     onTap: () async {
+          //
+          //                     },
+          //                   ),
+          //                 ]);
+          //     },
+          //     child: const Icon(
+          //       Icons.more_vert,
+          //       color: Colors.white,
+          //     )),
+
+         widget.form==null? TextButton(
               onPressed: () {
-                showMenu(
-                    context: context,
-                    position: const RelativeRect.fromLTRB(100, 0, 0, 0),
-                    items: widget.form == null
-                        ? [
-                            PopupMenuItem(
-                              child: const Text('Forms History'),
-                              onTap: () async {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (c) => const SavedFormsScreen()));
-                              },
-                            ),
-                            PopupMenuItem(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: const [
-                                  Text(
-                                    "Save Form",
-                                    style: TextStyle(),
-                                  ),
-                                ],
-                              ),
-                              onTap: () async {
-                                try {
-                                  var rootPath =
-                                      await getApplicationDocumentsDirectory();
-                                  //get forms file
-                                  File forms =
-                                      File("${rootPath.path}/forms.json");
-                                  //read forms in string var
-                                  String formsDataString =
-                                      forms.readAsStringSync();
-                                  log(formsDataString);
-                                  //convert the json list into FormData List
-                                  Iterable iter = jsonDecode(formsDataString);
-                                  //data list is all forms in forms.json
-                                  List<FormData> formsDataList =
-                                      List<FormData>.from(iter.map(
-                                          (model) => FormData.fromJson(model)));
-                                  //saved data is the current formData item
-                                  FormData savedData = FormData(
-                                      formId: formId,
-                                      inputId: int.parse(
-                                          widget.input.inputId.toString()),
-                                      formItems: formDataList);
-
-                                  //check existing data item
-                                  var existingItem = formsDataList.where(
-                                      (element) => element.formId == formId);
-                                  if (existingItem.isNotEmpty) {
-                                    savedData = existingItem.first;
-
-                                    savedData.formItems = formDataList;
-
-                                    forms.writeAsString(
-                                        jsonEncode(formsDataList));
-                                  } else {
-                                    formsDataList.add(savedData);
-                                    forms.writeAsString(
-                                        jsonEncode(formsDataList));
-                                  }
-                                  //save inputs
-
-                                  File inputs =
-                                      File("${rootPath.path}/inputs.json");
-                                  //read forms in string var
-                                  String inputsString =
-                                      inputs.readAsStringSync();
-                                  log(inputsString);
-                                  //convert the json list into FormData List
-                                  Iterable inputIter = jsonDecode(inputsString);
-                                  //data list is all forms in forms.json
-                                  List<FormInput> allInputs =
-                                      List<FormInput>.from(inputIter.map(
-                                          (model) =>
-                                              FormInput.fromJson(model)));
-                                  FormInput input = allInputs
-                                      .where((element) =>
-                                          element.inputId ==
-                                          widget.input.inputId)
-                                      .first;
-                                  input.customer = customer;
-                                  input.siteName = siteName;
-                                  input.dnn = deliveryNoteNumber.text;
-                                  input.hoseAssembler =
-                                      hoseAssemblerController.text;
-                                  input.requisitionNb =
-                                      requisitionNbController.text;
-                                  input.date = dateText.text;
-                                  inputs.writeAsString(jsonEncode(allInputs));
-
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                          backgroundColor: Colors.green,
-                                          content: Text(
-                                            "Form saved successfully",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          )));
-                                } on Exception catch (e, s) {
-                                  print(s);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(e.toString())));
-                                }
-                              },
-                            ),
-                          ]
-                        : [
-                            PopupMenuItem(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: const [
-                                  Text(
-                                    "Save Form",
-                                    style: TextStyle(),
-                                  ),
-                                ],
-                              ),
-                              onTap: () async {
-                                try {
-                                  var rootPath =
-                                      await getApplicationDocumentsDirectory();
-                                  //get forms file
-                                  File forms =
-                                      File("${rootPath.path}/forms.json");
-                                  //read forms in string var
-                                  String formsDataString =
-                                      forms.readAsStringSync();
-                                  log(formsDataString);
-                                  //convert the json list into FormData List
-                                  Iterable iter = jsonDecode(formsDataString);
-                                  //data list is all forms in forms.json
-                                  List<FormData> formsDataList =
-                                      List<FormData>.from(iter.map(
-                                          (model) => FormData.fromJson(model)));
-                                  //saved data is the current formData item
-                                  FormData savedData = FormData(
-                                      formId: formId,
-                                      inputId: int.parse(
-                                          widget.input.inputId.toString()),
-                                      formItems: formDataList);
-
-                                  //check existing data item
-                                  var existingItem = formsDataList.where(
-                                      (element) => element.formId == formId);
-                                  if (existingItem.isNotEmpty) {
-                                    savedData = existingItem.first;
-
-                                    savedData.formItems = formDataList;
-
-                                    forms.writeAsString(
-                                        jsonEncode(formsDataList));
-                                  } else {
-                                    formsDataList.add(savedData);
-                                    forms.writeAsString(
-                                        jsonEncode(formsDataList));
-                                  }
-                                  //save inputs
-
-                                  File inputs =
-                                      File("${rootPath.path}/inputs.json");
-                                  //read forms in string var
-                                  String inputsString =
-                                      inputs.readAsStringSync();
-                                  log(inputsString);
-                                  //convert the json list into FormData List
-                                  Iterable inputIter = jsonDecode(inputsString);
-                                  //data list is all forms in forms.json
-                                  List<FormInput> allInputs =
-                                      List<FormInput>.from(inputIter.map(
-                                          (model) =>
-                                              FormInput.fromJson(model)));
-                                  FormInput input = allInputs
-                                      .where((element) =>
-                                          element.inputId ==
-                                          widget.input.inputId)
-                                      .first;
-                                  input.customer = customer;
-                                  input.siteName = siteName;
-                                  input.dnn = deliveryNoteNumber.text;
-                                  input.hoseAssembler =
-                                      hoseAssemblerController.text;
-                                  input.requisitionNb =
-                                      requisitionNbController.text;
-                                  input.date = dateText.text;
-                                  inputs.writeAsString(jsonEncode(allInputs));
-
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                          backgroundColor: Colors.green,
-                                          content: Text(
-                                            "Form saved successfully",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          )));
-                                } on Exception catch (e, s) {
-                                  print(s);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(e.toString())));
-                                }
-                              },
-                            ),
-                          ]);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (c) => const SavedFormsScreen()));
               },
-              child: const Icon(
-                Icons.more_vert,
-                color: Colors.white,
+              child: Text(
+                "All Forms",
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              )):Container(),
+          widget.form==null? Center(
+            child: Text(
+              " |",
+              style: TextStyle(
+                  color: Colors.grey.shade200, fontWeight: FontWeight.bold),
+            ),
+          ):Container(),
+          TextButton(
+              onPressed: () async {
+                try {
+                  var rootPath = await getApplicationDocumentsDirectory();
+                  //get forms file
+                  File forms = File("${rootPath.path}/forms.json");
+                  //read forms in string var
+                  String formsDataString = forms.readAsStringSync();
+                  log(formsDataString);
+                  //convert the json list into FormData List
+                  Iterable iter = jsonDecode(formsDataString);
+                  //data list is all forms in forms.json
+                  List<FormData> formsDataList = List<FormData>.from(
+                      iter.map((model) => FormData.fromJson(model)));
+                  //saved data is the current formData item
+                  FormData savedData = FormData(
+                      formId: formId,
+                      inputId: int.parse(widget.input.inputId.toString()),
+                      formItems: formDataList);
+
+                  //check existing data item
+                  var existingItem = formsDataList
+                      .where((element) => element.formId == formId);
+                  if (existingItem.isNotEmpty) {
+                    savedData = existingItem.first;
+
+                    savedData.formItems = formDataList;
+
+                    forms.writeAsString(jsonEncode(formsDataList));
+                  } else {
+                    formsDataList.add(savedData);
+                    forms.writeAsString(jsonEncode(formsDataList));
+                  }
+                  //save inputs
+
+                  File inputs = File("${rootPath.path}/inputs.json");
+                  //read forms in string var
+                  String inputsString = inputs.readAsStringSync();
+                  log(inputsString);
+                  //convert the json list into FormData List
+                  Iterable inputIter = jsonDecode(inputsString);
+                  //data list is all forms in forms.json
+                  List<FormInput> allInputs = List<FormInput>.from(
+                      inputIter.map((model) => FormInput.fromJson(model)));
+                  FormInput input = allInputs
+                      .where(
+                          (element) => element.inputId == widget.input.inputId)
+                      .first;
+                  input.customer = customer;
+                  input.siteName = siteName;
+                  input.dnn = deliveryNoteNumber.text;
+                  input.hoseAssembler = hoseAssemblerController.text;
+                  input.requisitionNb = requisitionNbController.text;
+                  input.date = dateText.text;
+                  inputs.writeAsString(jsonEncode(allInputs));
+
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text(
+                        "Form saved successfully",
+                        style: TextStyle(color: Colors.white),
+                      )));
+                } on Exception catch (e, s) {
+                  print(s);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(e.toString())));
+                }
+              },
+              child: Text(
+                "Save",
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               )),
         ],
         bottom: TabBar(
-          onTap: (index){
-            setState(() {
-              _tabController.index = index;
-            });
-          },
+            onTap: (index) {
+              setState(() {
+                _tabController.index = index;
+              });
+            },
             indicatorColor: Colors.white,
             indicatorSize: TabBarIndicatorSize.tab,
             indicatorWeight: 4,
@@ -605,22 +618,6 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                       .toString()
                                                       .isEmpty ||
                                                   item.oldImagePath == null) {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    selectImages(
-                                                        "gallery", "old", item);
-                                                  },
-                                                  child: const Padding(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: Icon(
-                                                      Icons.add_circle,
-                                                      color:
-                                                          MyAppTheme.primaryRed,
-                                                    ),
-                                                  ),
-                                                );
-                                              } else {
                                                 return Row(
                                                   children: [
                                                     InkWell(
@@ -632,11 +629,71 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                         padding:
                                                             EdgeInsets.all(8.0),
                                                         child: Icon(
-                                                          Icons.edit,
+                                                          Icons.image,
                                                           color: MyAppTheme
                                                               .primaryRed,
                                                         ),
                                                       ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        selectImages("camera",
+                                                            "old", item);
+                                                      },
+                                                      child: const Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child: Icon(
+                                                          Icons.camera_alt,
+                                                          color: MyAppTheme
+                                                              .primaryRed,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                return Row(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        InkWell(
+                                                          onTap: () {
+                                                            selectImages(
+                                                                "gallery",
+                                                                "old",
+                                                                item);
+                                                          },
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8.0),
+                                                            child: Icon(
+                                                              Icons.image,
+                                                              color: MyAppTheme
+                                                                  .primaryRed,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap: () {
+                                                            selectImages(
+                                                                "camera",
+                                                                "old",
+                                                                item);
+                                                          },
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8.0),
+                                                            child: Icon(
+                                                              Icons.camera_alt,
+                                                              color: MyAppTheme
+                                                                  .primaryRed,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                     InkWell(
                                                       onTap: () {
@@ -745,38 +802,82 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                       .toString()
                                                       .isEmpty ||
                                                   item.newImagePath == null) {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    selectImages(
-                                                        "gallery", "new", item);
-                                                  },
-                                                  child: const Padding(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: Icon(
-                                                      Icons.add_circle,
-                                                      color:
-                                                          MyAppTheme.primaryRed,
-                                                    ),
-                                                  ),
-                                                );
-                                              } else {
                                                 return Row(
                                                   children: [
                                                     InkWell(
                                                       onTap: () {
                                                         selectImages("gallery",
-                                                            "old", item);
+                                                            "new", item);
                                                       },
                                                       child: const Padding(
                                                         padding:
                                                             EdgeInsets.all(8.0),
                                                         child: Icon(
-                                                          Icons.edit,
+                                                          Icons.image,
                                                           color: MyAppTheme
                                                               .primaryRed,
                                                         ),
                                                       ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        selectImages("camera",
+                                                            "new", item);
+                                                      },
+                                                      child: const Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child: Icon(
+                                                          Icons.camera_alt,
+                                                          color: MyAppTheme
+                                                              .primaryRed,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                return Row(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        InkWell(
+                                                          onTap: () {
+                                                            selectImages(
+                                                                "gallery",
+                                                                "new",
+                                                                item);
+                                                          },
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8.0),
+                                                            child: Icon(
+                                                              Icons.image,
+                                                              color: MyAppTheme
+                                                                  .primaryRed,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap: () {
+                                                            selectImages(
+                                                                "camera",
+                                                                "new",
+                                                                item);
+                                                          },
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8.0),
+                                                            child: Icon(
+                                                              Icons.camera_alt,
+                                                              color: MyAppTheme
+                                                                  .primaryRed,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                     InkWell(
                                                       onTap: () {
@@ -1117,9 +1218,17 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                       children: [
                         InkWell(
                           onTap: () async {
-                            FormData data = FormData(formId: formId, inputId: widget.input.inputId!, formItems: formDataList);
-                            FormInputViewModel formInputViewModel = FormInputViewModel(formData: data, formInput: widget.input);
-                            ReportsBloc.instance(context).add(GenerateReportEvent(formInputViewModel: formInputViewModel, context: context));
+                            FormData data = FormData(
+                                formId: formId,
+                                inputId: widget.input.inputId!,
+                                formItems: formDataList);
+                            FormInputViewModel formInputViewModel =
+                                FormInputViewModel(
+                                    formData: data, formInput: widget.input);
+                            ReportsBloc.instance(context).add(
+                                GenerateReportEvent(
+                                    formInputViewModel: formInputViewModel,
+                                    context: context));
                           },
                           child: Container(
                             height: 62,
