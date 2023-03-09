@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.auto_lubumbashi">
    <application
-        android:label="auto_lubumbashi"
+        android:label="Auto Lubumbashi"
         android:name="${applicationName}"
+       android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
        <provider
            android:name="androidx.core.content.FileProvider"

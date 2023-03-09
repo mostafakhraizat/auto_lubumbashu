@@ -302,49 +302,58 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
             item.oldImagePath.toString(), item.newImagePath.toString());
 
         try {
-          var oldImage = images.first;
-          var oldImageWidget = pw.Column(children: [
-            pw.Text("Old Image ",
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
-            pw.SizedBox(height: 6),
-            pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
-              pw.Center(
-                  child: pw.Padding(
-                padding: const pw.EdgeInsets.all(8),
-                child: pw.Image(
-                    pw.MemoryImage(
-                      (oldImage.imagesData),
-                    ),
-                    width: 660,
-                    height: 400,
-                    fit: pw.BoxFit.contain),
-              ))
-            ])
-          ]);
-          widgets.add(oldImageWidget);
-          var newImage = images.first;
+          if(images.length>0){
+            var oldImage = images.first;
+            var oldImageWidget = pw.Column(children: [
+              pw.Text("Old Image ",
+                  style:
+                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
+              pw.SizedBox(height: 6),
+              pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+                pw.Center(
+                    child: pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Image(
+                          pw.MemoryImage(
+                            (oldImage.imagesData),
+                          ),
+                          width: 660,
+                          height: 400,
+                          fit: pw.BoxFit.contain),
+                    ))
+              ])
+            ]);
+            widgets.add(oldImageWidget);
+          }
 
-          var newImageWidget = pw.Column(children: [
-            pw.Text("New Image ",
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
-            pw.SizedBox(height: 6),
-            pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
-              pw.Center(
-                  child: pw.Padding(
-                padding: const pw.EdgeInsets.all(8),
-                child: pw.Image(
-                    pw.MemoryImage(
-                      (newImage.imagesData),
-                    ),
-                    width: 660,
-                    height: 400,
-                    fit: pw.BoxFit.contain),
-              ))
-            ])
-          ]);
-          widgets.add(newImageWidget);
+
+
+
+          if(images.length>1){
+
+            var newImage = images.last;
+
+            var newImageWidget = pw.Column(children: [
+              pw.Text("New Image ",
+                  style:
+                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
+              pw.SizedBox(height: 6),
+              pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+                pw.Center(
+                    child: pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Image(
+                          pw.MemoryImage(
+                            (newImage.imagesData),
+                          ),
+                          width: 660,
+                          height: 400,
+                          fit: pw.BoxFit.contain),
+                    ))
+              ])
+            ]);
+            widgets.add(newImageWidget);
+          }
         } catch (e, s) {
           print(s);
           print(e);

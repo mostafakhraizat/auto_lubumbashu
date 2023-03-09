@@ -273,23 +273,28 @@ class _CreateFormScreenState extends State<CreateFormScreen>
           //       color: Colors.white,
           //     )),
 
-         widget.form==null? TextButton(
+          TextButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (c) => const SavedFormsScreen()));
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
-              child: Text(
-                "All Forms",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              )):Container(),
-          widget.form==null? Center(
+              child: Row(
+                children: [
+                  Icon(Icons.home,color:Colors.white),
+                  Text(
+                    "Home",
+                    style:
+                        TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )),
+           Center(
             child: Text(
               " |",
               style: TextStyle(
                   color: Colors.grey.shade200, fontWeight: FontWeight.bold),
             ),
-          ):Container(),
+          ),
           TextButton(
               onPressed: () async {
                 try {
@@ -358,7 +363,7 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                       .showSnackBar(SnackBar(content: Text(e.toString())));
                 }
               },
-              child: Text(
+              child:const Text(
                 "Save",
                 style:
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -622,8 +627,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                   children: [
                                                     InkWell(
                                                       onTap: () {
-                                                        selectImages("gallery",
-                                                            "old", item);
+                                                        selectOldImage("gallery",
+                                                             item);
                                                       },
                                                       child: const Padding(
                                                         padding:
@@ -637,8 +642,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                     ),
                                                     InkWell(
                                                       onTap: () {
-                                                        selectImages("camera",
-                                                            "old", item);
+                                                        selectOldImage("camera",
+                                                             item);
                                                       },
                                                       child: const Padding(
                                                         padding:
@@ -659,9 +664,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                       children: [
                                                         InkWell(
                                                           onTap: () {
-                                                            selectImages(
+                                                            selectOldImage(
                                                                 "gallery",
-                                                                "old",
                                                                 item);
                                                           },
                                                           child: const Padding(
@@ -677,9 +681,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                         ),
                                                         InkWell(
                                                           onTap: () {
-                                                            selectImages(
+                                                            selectOldImage(
                                                                 "camera",
-                                                                "old",
                                                                 item);
                                                           },
                                                           child: const Padding(
@@ -806,8 +809,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                   children: [
                                                     InkWell(
                                                       onTap: () {
-                                                        selectImages("gallery",
-                                                            "new", item);
+                                                        selectNewImage("gallery",
+                                                             item);
                                                       },
                                                       child: const Padding(
                                                         padding:
@@ -821,8 +824,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                     ),
                                                     InkWell(
                                                       onTap: () {
-                                                        selectImages("camera",
-                                                            "new", item);
+                                                        selectNewImage("camera",
+                                                            item);
                                                       },
                                                       child: const Padding(
                                                         padding:
@@ -843,9 +846,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                       children: [
                                                         InkWell(
                                                           onTap: () {
-                                                            selectImages(
+                                                            selectNewImage(
                                                                 "gallery",
-                                                                "new",
                                                                 item);
                                                           },
                                                           child: const Padding(
@@ -861,9 +863,8 @@ class _CreateFormScreenState extends State<CreateFormScreen>
                                                         ),
                                                         InkWell(
                                                           onTap: () {
-                                                            selectImages(
+                                                            selectNewImage(
                                                                 "camera",
-                                                                "new",
                                                                 item);
                                                           },
                                                           child: const Padding(
@@ -1275,7 +1276,7 @@ class _CreateFormScreenState extends State<CreateFormScreen>
     );
   }
 
-  void selectImages(String type, String condition, FormItem item) async {
+  void selectOldImage(String type,  FormItem item) async {
     final ImagePicker imagePicker = ImagePicker();
 
     final XFile? selectedImage = await imagePicker.pickImage(
@@ -1301,15 +1302,112 @@ class _CreateFormScreenState extends State<CreateFormScreen>
         ],
       );
       if (croppedFile != null) {
-        if (condition == "new") {
-          setState(() {
-            item.newImagePath = croppedFile.path;
-          });
-        } else {
-          setState(() {
-            item.oldImagePath = croppedFile.path;
-          });
-        }
+        setState(() {
+          item.oldImagePath="";
+          item.oldImagePath = croppedFile.path;
+        });
+      }
+    }
+  }
+  void editOldImage(String type, FormItem item) async {
+    final ImagePicker imagePicker = ImagePicker();
+
+    final XFile? selectedImage = await imagePicker.pickImage(
+      source: type == 'camera' ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 20,
+    );
+
+    if (selectedImage != null) {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: selectedImage.path,
+        compressFormat: ImageCompressFormat.jpg,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Image Cropper',
+            toolbarColor: MyAppTheme.primaryRed,
+            lockAspectRatio: false,
+            activeControlsWidgetColor: MyAppTheme.primaryRed,
+            toolbarWidgetColor: Colors.white,
+          ),
+          IOSUiSettings(
+            title: 'Cropper',
+          ),
+        ],
+      );
+      if (croppedFile != null) {
+        setState(() {
+          item.oldImagePath="";
+          item.oldImagePath = croppedFile.path;
+        });
+      }
+    }
+  }
+
+
+
+  void selectNewImage(String type,  FormItem item) async {
+    final ImagePicker imagePicker = ImagePicker();
+
+    final XFile? selectedImage = await imagePicker.pickImage(
+      source: type == 'camera' ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 20,
+    );
+
+    if (selectedImage != null) {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: selectedImage.path,
+        compressFormat: ImageCompressFormat.jpg,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Image Cropper',
+            toolbarColor: MyAppTheme.primaryRed,
+            lockAspectRatio: false,
+            activeControlsWidgetColor: MyAppTheme.primaryRed,
+            toolbarWidgetColor: Colors.white,
+          ),
+          IOSUiSettings(
+            title: 'Cropper',
+          ),
+        ],
+      );
+      if (croppedFile != null) {
+        setState(() {
+          item.newImagePath = "";
+          item.newImagePath = croppedFile.path;
+        });
+      }
+    }
+  }
+  void editNewImage(String type, FormItem item) async {
+    final ImagePicker imagePicker = ImagePicker();
+
+    final XFile? selectedImage = await imagePicker.pickImage(
+      source: type == 'camera' ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 20,
+    );
+
+    if (selectedImage != null) {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: selectedImage.path,
+        compressFormat: ImageCompressFormat.jpg,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Image Cropper',
+            toolbarColor: MyAppTheme.primaryRed,
+            lockAspectRatio: false,
+            activeControlsWidgetColor: MyAppTheme.primaryRed,
+            toolbarWidgetColor: Colors.white,
+          ),
+          IOSUiSettings(
+            title: 'Cropper',
+          ),
+        ],
+      );
+      if (croppedFile != null) {
+        setState(() {
+          item.newImagePath = "";
+          item.newImagePath = croppedFile.path;
+        });
       }
     }
   }
