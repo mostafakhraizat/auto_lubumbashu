@@ -1,6 +1,5 @@
 
 import 'package:auto_lubumbashi/bloc/forms/forms_bloc.dart';
-import 'package:auto_lubumbashi/models/FormData.dart';
 import 'package:auto_lubumbashi/themes/app_theme.dart';
 import 'package:auto_lubumbashi/ui/forms/screens/create_form_screen.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +133,9 @@ class _SavedFormsScreenState extends State<SavedFormsScreen> {
                                               .elementAt(index)
                                               .formInput,
                                       form: state.formsInputs.elementAt(index).formData,
-                                        )));
+                                        ))).then((value) {
+                                  FormsBloc.instance(context).add(SavedFormsInitialEvent());
+                                });
                               },
                               trailing: InkWell(
                                   onTap: () async {
@@ -196,7 +197,7 @@ class _SavedFormsScreenState extends State<SavedFormsScreen> {
                 );
               }
               return Container(
-                child: Text("${state}"),
+                child: Text("$state"),
               );
             }),
           );

@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               InkWell(
                 onTap: () async {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>SavedFormsScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (c)=>const SavedFormsScreen()));
                 },
                 child: Container(
                   height: 62,
@@ -134,7 +134,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               InkWell(
                 onTap: () async {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (v)=>GeneratedReports()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (v)=>const GeneratedReports()));
                 },
                 child: Container(
                   height: 62,

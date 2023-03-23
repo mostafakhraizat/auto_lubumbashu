@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:auto_lubumbashi/themes/app_theme.dart';
 import 'package:auto_lubumbashi/ui/home/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await checkFiles();
-
   runApp(  const MyApp());
 }
 
@@ -41,7 +39,7 @@ Future<void> checkFiles() async {
 
   }
 
-  //forms
+  //reports
   File reports = File("${rootPath.path}/reports.json");
   if (reports.existsSync()) {
     String fileData = reports.readAsStringSync();

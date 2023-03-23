@@ -6,12 +6,11 @@ import 'package:auto_lubumbashi/ui/pdf/pdf_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart' as path;
 
 import 'package:flutter/material.dart';
 
 class GeneratedReports extends StatefulWidget {
-  GeneratedReports({Key? key}) : super(key: key);
+  const GeneratedReports({Key? key}) : super(key: key);
 
   @override
   State<GeneratedReports> createState() => _GeneratedReportsState();
@@ -44,7 +43,7 @@ class _GeneratedReportsState extends State<GeneratedReports> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.hourglass_empty,
                         size: 42,
                         color: MyAppTheme.primaryRed,
@@ -121,9 +120,8 @@ class _GeneratedReportsState extends State<GeneratedReports> {
                                           pdf: File(state.reports
                                               .elementAt(index)
                                               .path),
-                                          title: state.reports
-                                              .elementAt(index)
-                                              .dnn)));
+                                          title:
+                                              "${state.reports.elementAt(index).dnn}-${state.reports.elementAt(index).siteName.toString()}_${state.reports.elementAt(index).date.toString()}")));
                                 },
                                 title: SizedBox(
                                   width:
@@ -134,7 +132,8 @@ class _GeneratedReportsState extends State<GeneratedReports> {
                                         final f = DateFormat('dd-MM-yyyy');
                                         return Flexible(
                                           child: Text(
-                                            "#${(state.reports.elementAt(index).dnn)}\n${f.format(DateTime.parse(state.reports.elementAt(index).date))}",
+
+                                            "${state.reports.elementAt(index).dnn}-${state.reports.elementAt(index).siteName.toString()}_${state.reports.elementAt(index).date.substring(0,10).toString()}",
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -166,7 +165,7 @@ class _GeneratedReportsState extends State<GeneratedReports> {
                                             filePath: result.path,
                                           );
                                         },
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.share,
                                           color: MyAppTheme.primaryRed,
                                         )),
@@ -175,8 +174,12 @@ class _GeneratedReportsState extends State<GeneratedReports> {
                                     ),
                                     InkWell(
                                         onTap: () async {
-                                          print("Deleted: ${state.reports.elementAt(index).path}");
-                                              ReportsBloc.instance(context).add(DeleteReportEvent(state.reports.elementAt(index).path));
+                                          print(
+                                              "Deleted: ${state.reports.elementAt(index).path}");
+                                          ReportsBloc.instance(context).add(
+                                              DeleteReportEvent(state.reports
+                                                  .elementAt(index)
+                                                  .path));
                                         },
                                         child: const Icon(
                                           Icons.delete,
@@ -194,6 +197,7 @@ class _GeneratedReportsState extends State<GeneratedReports> {
                                     child: Text(
                                       "${index + 1}",
                                       style: const TextStyle(
+                                        color: Colors.white,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),

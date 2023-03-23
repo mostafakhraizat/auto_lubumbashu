@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:auto_lubumbashi/ui/forms/screens/create_form_screen.dart';
 import 'package:auto_lubumbashi/utils/constants.dart';
-import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
 import 'package:auto_lubumbashi/models/FormInput.dart';
 import 'package:auto_lubumbashi/themes/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +18,10 @@ class _FormInputScreenState extends State<FormInputScreen> {
   GlobalKey<FormState> key = GlobalKey();
 
   TextEditingController hoseAssemblerController = TextEditingController();
+  TextEditingController customerName = TextEditingController();
   TextEditingController requisitionNbController = TextEditingController();
   TextEditingController deliveryNoteNumber = TextEditingController();
+  TextEditingController siteNameController = TextEditingController();
   TextEditingController dateText = TextEditingController();
   String? siteName;
   String? customer;
@@ -30,11 +29,9 @@ class _FormInputScreenState extends State<FormInputScreen> {
   DateTime? selectedDate;
   List<String>siteNames = [];
   List<String> customers = [];
-
   @override
   void initState() {
     siteNames = siteNamesCustomers.keys.toList();
-
     super.initState();
   }
   Future<void> _selectDate(BuildContext context) async {
@@ -53,7 +50,9 @@ class _FormInputScreenState extends State<FormInputScreen> {
       });
     }
   }
-
+  bool addOtherField = false;
+  bool addSiteNameField = false;
+  bool hideCustomer = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,7 +104,7 @@ class _FormInputScreenState extends State<FormInputScreen> {
                             return null;
                           },
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 12),
+                            contentPadding: const EdgeInsets.only(left: 12),
                             hintStyle: const TextStyle(color: Colors.grey),
                             hintText: 'Deliver Note Number',
                             border: OutlineInputBorder(
@@ -117,15 +116,18 @@ class _FormInputScreenState extends State<FormInputScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
                         child: DropdownButtonFormField(
-                           items: siteNames.map((e) => DropdownMenuItem(value: e,child: Text(e.toString()),)).toList(),
+                          items: siteNames.map((e) => DropdownMenuItem(value: e,child: Text(e.toString()),)).toList(),
                           hint: const Text("Site Name"),
                           onChanged: (value) {
                             setState(() {
                               siteName = value.toString();
                               customer = null;
                               customers = siteNamesCustomers["$siteName"]!.toList();
-
+                              addSiteNameField = value == "Other";
+                              hideCustomer = value == "Other";
+                              addOtherField = value == "Other";
                             });
+
                           },
                           value: siteName,
                           validator: (value) {
@@ -136,7 +138,34 @@ class _FormInputScreenState extends State<FormInputScreen> {
                           },
                         ),
                       ),
-                      Padding(
+                      Builder(
+                        builder: (context) {
+                          if(addSiteNameField){
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please Enter Site Name';
+                                  }
+                                  return null;
+                                },
+                                controller: siteNameController,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(left: 12),
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  hintText: 'Site Name',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return Container() ;
+                        }
+                      ),
+                      hideCustomer? Container():   Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
                         child: DropdownButtonFormField(
                            items: customers.map((e) => DropdownMenuItem(value: e,child: Text(e.toString()),)).toList(),
@@ -145,6 +174,13 @@ class _FormInputScreenState extends State<FormInputScreen> {
                             setState(() {
                               customer = value.toString();
                             });
+                            //
+                            setState(() {
+                              addOtherField = customer == "Other";
+                              hideCustomer = false;
+                            });
+
+
                           },
                           value: customer,
                           validator: (value) {
@@ -154,6 +190,34 @@ class _FormInputScreenState extends State<FormInputScreen> {
                             return null;
                           },
                         ),
+                      ),
+
+
+                      Builder(
+                        builder: (context) {
+                          if(addOtherField){
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please Enter Customer Name';
+                                  }
+                                  return null;
+                                },
+                                controller: customerName,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(left: 12),
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  hintText: 'Customer Name',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }return Container();
+                        }
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -166,7 +230,7 @@ class _FormInputScreenState extends State<FormInputScreen> {
                           },
                           controller: hoseAssemblerController,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 12),
+                            contentPadding: const EdgeInsets.only(left: 12),
                             hintStyle: const TextStyle(color: Colors.grey),
                             hintText: 'Hose Assembler',
                             border: OutlineInputBorder(
@@ -186,7 +250,7 @@ class _FormInputScreenState extends State<FormInputScreen> {
                             return null;
                           },
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 12),
+                            contentPadding: const EdgeInsets.only(left: 12),
                             hintStyle: const TextStyle(color: Colors.grey),
                             hintText: 'Requisition NO:',
                             border: OutlineInputBorder(
@@ -241,8 +305,10 @@ class _FormInputScreenState extends State<FormInputScreen> {
                               int id =
                               DateTime.now().millisecondsSinceEpoch;
                               FormInput input = FormInput(
-                                siteName: siteName,
-                                customer: customer,
+                                addSiteName: addSiteNameField,
+                                addCustomerName: addOtherField,
+                                siteName:addSiteNameField?siteNameController.text: siteName,
+                                customer:addSiteNameField?customerName.text :(addOtherField?customerName.text:customer),
                                 date: dateText.text,
                                 inputId: id,
                                 dnn: deliveryNoteNumber.text,

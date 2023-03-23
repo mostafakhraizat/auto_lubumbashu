@@ -5,7 +5,7 @@
       "KCS",
       "Other",
     ],
-    "3-Kinsevere":[
+    "03-Kinsevere":[
       "MMG",
       "Mexco",
       "Other",
@@ -16,6 +16,16 @@
       "Sam Transport",
       "Other",
     ],
+    "08-KAKULA NORTH":[
+      "JMMC",
+      "KCS",
+      "KONGO RIVER",
+      "Other",
+    ],
+    "09-KTO":[
+      "KCC",
+      "Other"
+    ],
     "12-TFM":[
       "MTN",
       "Central Services",
@@ -24,9 +34,16 @@
       "HQD",
       "Other",
     ],
-    "09-KTO":[
-      "KCC",
-      "Other"
+    "14-KAMBOVE":[
+      "BMC",
+      "COMIKA",
+      "Other",
+    ],
+    "15-KAKULA SOUTH":[
+      "JMMC",
+      "KCS",
+      "KONGO RIVER",
+      "Other",
     ],
     "16-SKM":[
       "KCC-SKM",
@@ -38,17 +55,11 @@
       "KCS",
       "Other",
     ],
-    "15-KAKULA SOUTH":[
-      "JMMC",
-      "KCS",
-      "KONGO RIVER",
+    "19-MUSONOI":[
+      "KKC",
       "Other",
-    ],
-    "08-KAKULA NORTH":[
-      "JMMC",
-      "KCS",
-      "KONGO RIVER",
-      "Other",
+
+
     ],
     "20-KAMOA UG":[
       "JMMC",
@@ -56,20 +67,10 @@
       "KONGO RIVER",
       "Other",
     ],
-    "19-MUSON":[
-      "KKC",
-      "Other",
-
-
-    ],
-    "14-KAMBOVE":[
-      "BMC",
-      "COMIKA",
-      "Other",
-    ],
     "21-MUMI":[
       "MUMI",
       "KCS",
       "Other",
     ],
+    "Other":[],
   };

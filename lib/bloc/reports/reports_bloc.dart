@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 import 'package:auto_lubumbashi/ui/reports/reports_screen/reports_screen.dart';
 import 'package:path/path.dart' as path;
 import 'package:auto_lubumbashi/models/form_item.dart';
@@ -22,7 +24,7 @@ part 'reports_state.dart';
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ReportsBloc() : super(ReportsInitial()) {
     on<ReportScreenInitialEvent>((event, emit) async {
-      emit(ReportsListSuccessState(await allReports()));
+      emit(ReportsListSuccessState((await allReports()).reversed.toList()));
     });
     on<DeleteReportEvent>((event, emit) async{
       var reports = await allReports();
@@ -68,7 +70,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           Report report = Report(
               dnn: event.formInputViewModel.formInput.dnn.toString(),
               date: DateTime.now().toString(),
-              path: file.path);
+              path: file.path,
+          siteName: event.formInputViewModel.formInput.siteName.toString()
+          );
           reports.add(report);
           writeReports(reports);
 
@@ -85,7 +89,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
               action: SnackBarAction(
                 onPressed: () async {
                   Navigator.of(event.context).push(
-                      MaterialPageRoute(builder: (c) => GeneratedReports()));
+                      MaterialPageRoute(builder: (c) => const GeneratedReports()));
                 },
                 label: 'All Reports',
                 textColor: Colors.white,
@@ -135,6 +139,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     //data list is all forms in forms.json
     List<Report> reports =
         List<Report>.from(iter.map((model) => Report.fromJson(model)));
+
     return reports;
   }
 
@@ -145,7 +150,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       List<pw.Widget> widgets = [];
       var header = pw.Container(
         width: MediaQuery.of(context).size.width * 2.0,
-        height: 240,
+        height: 120,
         decoration: pw.BoxDecoration(
             border: pw.Border.all(color: PdfColor.fromHex("000000"))),
         child: pw.Row(
@@ -158,7 +163,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
                       border: pw.Border.all(color: PdfColor.fromHex("000000"))),
                   child: pw.Center(
                       child: pw.Image(pw.MemoryImage(image),
-                          width: 140, height: 140))),
+                          width: 100, height: 100))),
             ),
             pw.Expanded(
               flex: 3,
@@ -169,10 +174,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
                       child: pw.Column(
                           mainAxisAlignment: pw.MainAxisAlignment.center,
                           children: [
-                        // pw.Text("Cylinder Inspection",
-                        //     style: pw.TextStyle(
-                        //         fontWeight: pw.FontWeight.bold, fontSize: 18)),
-                        pw.SizedBox(height: 32),
+
+                        pw.SizedBox(height: 14),
                         pw.Row(
                             mainAxisAlignment: pw.MainAxisAlignment.center,
                             children: [
@@ -203,7 +206,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
                                     fontSize: 16,
                                     fontWeight: pw.FontWeight.bold)),
                             pw.Text(
-                                "${formInputViewModel.formInput.dnn.toString()}",
+                                formInputViewModel.formInput.dnn.toString(),
                                 style: const pw.TextStyle(
                                   fontSize: 14,
                                 )),
@@ -278,17 +281,91 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       widgets.add(header);
       widgets.add(pw.SizedBox(height: 36));
 
-      pdf.addPage(pw.MultiPage(
-          pageFormat: PdfPageFormat.a3, build: (context) => widgets));
 
-      for (var item in formInputViewModel.formData.formItems) {
+      ///deliver note image
+
+      if(formInputViewModel.formData.deliverNoteNumber!=null &&formInputViewModel.formData.deliverNoteNumber !="" ){
+        widgets.add(pw.Text("Deliver Note Number",
+            style:
+            pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)));
+        widgets.add(pw.SizedBox(height: 32));
+        widgets.add(pw.Center(
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Image(
+                pw.MemoryImage(
+                  (File(formInputViewModel.formData.deliverNoteNumber.toString()).readAsBytesSync()),
+                ),
+                height: 580,
+                fit: pw.BoxFit.contain
+              ),
+            )));
+
+
+        pdf.addPage(pw.MultiPage(
+            pageFormat: PdfPageFormat.a4.copyWith(
+              marginRight: 14,
+              marginLeft: 14,
+              marginBottom: 14,
+              marginTop: 12,
+            ), build: (context) => widgets));
+      }
+
+
+
+
+      ///requisition added images
+      List<pw.Widget> requisitionImagesWidgets = [];
+      if(formInputViewModel.formData.requisitionImages.isNotEmpty){
+        requisitionImagesWidgets.add(pw.Text("Requisition/Work Order",
+            style:
+            pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)));
+
+        if(formInputViewModel.formData.requisitionImages.first.toString()!="null"
+            && formInputViewModel.formData.requisitionImages.first.toString()!=""){
+          var requisitionImagesWidget = pw.Column(children: [
+
+            pw.SizedBox(height: 6),
+            pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+              pw.Center(
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.all(8),
+                    child: pw.Image(
+                        pw.MemoryImage(
+                          (File(formInputViewModel.formData.requisitionImages.first).readAsBytesSync()),
+                        ),
+                        height: 680,
+                        width: 440,
+                        fit: pw.BoxFit.contain),
+                  ))
+            ])
+          ]);
+          requisitionImagesWidgets.add(requisitionImagesWidget);
+        }
+
+
+
+
+
+        pdf.addPage(pw.MultiPage(
+            pageFormat: PdfPageFormat.a4.copyWith(
+              marginRight: 14,
+              marginLeft: 14,
+              marginBottom: 14,
+              marginTop: 12,
+            ), build: (context) => requisitionImagesWidgets));
+      }
+
+
+
+      for (FormItem item in formInputViewModel.formData.formItems) {
         List<pw.Widget> widgets = [];
 
         var itemDescription =
             pw.Column(mainAxisSize: pw.MainAxisSize.max, children: [
           pw.Row(children: [
             pw.Text(
-                "${formInputViewModel.formData.formItems.indexOf(item) + 1} ",
+                "${formInputViewModel.formData.formItems.indexOf(item) + 1}- ",
                 style:
                     pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
             pw.Text("${item.description} ",
@@ -296,18 +373,26 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
                     pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14)),
           ])
         ]);
+
+
         widgets.add(itemDescription);
         widgets.add(pw.SizedBox(height: 22));
         var images = await pdfItemImages(
-            item.oldImagePath.toString(), item.newImagePath.toString());
+            item.oldImages, item.newImages);
 
-        try {
-          if(images.length>0){
-            var oldImage = images.first;
+
+        if(images.oldImages.isNotEmpty){
+          for(var oldImageUInt8List in images.oldImages){
             var oldImageWidget = pw.Column(children: [
-              pw.Text("Old Image ",
-                  style:
-                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
+              pw.Builder(builder: (v){
+                if(oldImageUInt8List==images.oldImages.first){
+                  return  pw.Text("Old Hoses ",
+                      style:
+                      pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15));
+                }else{
+                  return pw.Container();
+                }
+              }),
               pw.SizedBox(height: 6),
               pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
                 pw.Center(
@@ -315,7 +400,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
                       padding: const pw.EdgeInsets.all(8),
                       child: pw.Image(
                           pw.MemoryImage(
-                            (oldImage.imagesData),
+                            (oldImageUInt8List.imagesData),
                           ),
                           width: 660,
                           height: 400,
@@ -327,16 +412,34 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           }
 
 
+        }
 
 
-          if(images.length>1){
 
-            var newImage = images.last;
+        pdf.addPage(pw.MultiPage(
+            pageFormat: PdfPageFormat.a4.copyWith(
+              marginRight: 14,
+              marginLeft: 14,
+              marginBottom: 14,
+              marginTop: 12,
+            ), build: (context) => widgets));
 
+        List<pw.Widget> newImagesWidgets = [];
+
+        if(images.newImages.isNotEmpty){
+          for(var newImageUInt8List in images.newImages){
             var newImageWidget = pw.Column(children: [
-              pw.Text("New Image ",
-                  style:
-                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
+              pw.Builder(builder: (v){
+                if(newImageUInt8List==images.newImages.first){
+
+                  return  pw.Text("New Hoses ",
+                      style:
+                      pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15));
+                }else{
+                  return pw.Container();
+                }
+              }),
+
               pw.SizedBox(height: 6),
               pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
                 pw.Center(
@@ -344,7 +447,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
                       padding: const pw.EdgeInsets.all(8),
                       child: pw.Image(
                           pw.MemoryImage(
-                            (newImage.imagesData),
+                            (newImageUInt8List.imagesData),
                           ),
                           width: 660,
                           height: 400,
@@ -352,25 +455,65 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
                     ))
               ])
             ]);
-            widgets.add(newImageWidget);
+            newImagesWidgets.add(newImageWidget);
           }
-        } catch (e, s) {
-          print(s);
-          print(e);
         }
-
-        widgets.add(pw.SizedBox(height: 22));
-        widgets.add(pw.Divider());
+        newImagesWidgets.add(pw.SizedBox(height: 22));
         pdf.addPage(pw.MultiPage(
-            pageFormat: PdfPageFormat.a3, build: (context) => widgets));
+            pageFormat: PdfPageFormat.a4.copyWith(
+                marginRight: 14,
+                marginLeft: 14,
+                marginBottom: 14,
+                marginTop: 12,
+            ), build: (context) => newImagesWidgets));
       }
 
-      // pdf.addPage(pw.MultiPage(
-      //     pageFormat: PdfPageFormat.a3,
-      //     build: (pw.Context context) => widgets));
+      ///reportTests added images
+      List<pw.Widget> reportTestsImagesWidgets = [];
+      if(formInputViewModel.formData.testsProjectImages.isNotEmpty){
+        reportTestsImagesWidgets.add(pw.Text("Test Reports",
+            style:
+            pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)));
+      }
+
+      for(String reportTestsImagesItem in (formInputViewModel.formData.testsProjectImages??[])){
+        if(reportTestsImagesItem.isNotEmpty){
+
+
+            var reportTestsImagesWidget = pw.Column(children: [
+
+              pw.SizedBox(height: 6),
+              pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+                pw.Center(
+                    child: pw.Padding(
+                      padding: const pw.EdgeInsets.all(8),
+                      child: pw.Image(
+                          pw.MemoryImage(
+                            (File(reportTestsImagesItem).readAsBytesSync()),
+                          ),
+                          width: 660,
+                          height: 400,
+                          fit: pw.BoxFit.contain),
+                    ))
+              ])
+            ]);
+            reportTestsImagesWidgets.add(reportTestsImagesWidget);
+        }
+      }
+      pdf.addPage(pw.MultiPage(
+          pageFormat: PdfPageFormat.a4.copyWith(
+              marginRight: 14,
+              marginLeft: 8,
+              marginBottom: 8,
+              marginTop: 12,
+          ), build: (context) => reportTestsImagesWidgets));
+
+
+
+
       final directory = await getExternalStorageDirectory();
       String newPath = path.join(directory!.path,
-          "PDF-${formInputViewModel.formInput.dnn.toString()}_${DateTime.now().toString()}.pdf");
+          "${formInputViewModel.formInput.dnn}-${formInputViewModel.formInput.siteName.toString()}_${formInputViewModel.formInput.date.toString()}.pdf");
       final file = File(newPath);
       await file.writeAsBytes(await pdf.save());
       return file;
@@ -381,13 +524,21 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     return null;
   }
 
-  Future<List<PDFItemImages>> pdfItemImages(
-      String oldImage, String newImage) async {
-    List<PDFItemImages> imagesData = [];
 
-    if (oldImage.isNotEmpty) {
+  
+  
+  Future<DataImagesModel> pdfItemImages(
+      List<String> oldImages, List<String> newImages) async {
+    List<PDFItemImages> oldImagesData = [];
+    List<PDFItemImages> newImagesData = [];
+
+      ////
+
+
+
+    for(var oldImage in oldImages){
       var decodedOldImage =
-          await decodeImageFromList(File(oldImage).readAsBytesSync());
+      await decodeImageFromList(File(oldImage).readAsBytesSync());
       PDFItemImages oldImageFile = PDFItemImages(
         width: 0,
         imagesData: File(oldImage).readAsBytesSync(),
@@ -398,27 +549,41 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       int oldHeight = decodedOldImage.height;
       oldImageFile.height = oldHeight;
       oldImageFile.width = oldWidth;
-      imagesData.add(oldImageFile);
+      oldImagesData.add(oldImageFile);
     }
+     for(var newImage in newImages){
+       var decodedNewImage =
+       await decodeImageFromList(File(newImage).readAsBytesSync());
+       PDFItemImages newImageFile = PDFItemImages(
+         width: 0,
+         imagesData: File(newImage).readAsBytesSync(),
+         height: 0,
+       );
+       int newWidth = decodedNewImage.width;
+       int newHeight = decodedNewImage.height;
+       newImageFile.height = newHeight;
+       newImageFile.width = newWidth;
+       newImagesData.add(newImageFile);
+     }
+/////
 
-    if (newImage.isNotEmpty) {
-      var decodedNewImage =
-          await decodeImageFromList(File(newImage).readAsBytesSync());
-      PDFItemImages newImageFile = PDFItemImages(
-        width: 0,
-        imagesData: File(newImage).readAsBytesSync(),
-        height: 0,
-      );
-      int newWidth = decodedNewImage.width;
-      int newHeight = decodedNewImage.height;
-      newImageFile.height = newHeight;
-      newImageFile.width = newWidth;
-      imagesData.add(newImageFile);
-    }
-
-    return imagesData;
+    DataImagesModel imagesModel=   DataImagesModel(oldImages: oldImagesData,newImages: newImagesData);
+    return imagesModel;
   }
 }
+
+
+
+class DataImagesModel{
+  List<PDFItemImages> oldImages;
+  List<PDFItemImages> newImages;
+  DataImagesModel(
+      {required this.oldImages, required this.newImages});
+
+}
+
+
+
 
 class PDFItemImages {
   Uint8List imagesData;

@@ -1,17 +1,12 @@
 import 'dart:async';
 import  'dart:convert';
 import 'dart:io';
-
 import 'package:auto_lubumbashi/models/FormData.dart';
 import 'package:auto_lubumbashi/models/FormInput.dart';
 import 'package:auto_lubumbashi/view_models/form_input_viewmodel.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
-
 part 'forms_event.dart';
 
 part 'forms_state.dart';
@@ -31,10 +26,7 @@ class FormsBloc extends Bloc<FormsEvent, FormsState> {
         FormInputViewModel viewModel = FormInputViewModel(formData: form, formInput: input);
         formsInputs.add(viewModel);
       }
-      emit(SavedFormsSuccessState(formsInputs: formsInputs));
-
-
-
+      emit(SavedFormsSuccessState(formsInputs: formsInputs.reversed.toList()));
 
     });
 

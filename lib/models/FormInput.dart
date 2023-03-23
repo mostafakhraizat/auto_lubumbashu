@@ -6,12 +6,15 @@ class FormInput {
   String? siteName;
   String? customer;
   String? date;
-
+  bool? addCustomerName;
+  bool? addSiteName;
   FormInput(
       {required this.dnn,
       required this.inputId,
+      required this.addSiteName,
       required this.hoseAssembler,
       required this.customer,
+      required this.addCustomerName,
       required this.date,
       required this.siteName,
       required this.requisitionNb});

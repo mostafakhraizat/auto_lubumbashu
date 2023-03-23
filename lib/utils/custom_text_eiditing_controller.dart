@@ -30,7 +30,7 @@ class CustomTextEdittingController extends TextEditingController {
         children.add(TextSpan(text: n, style: style));
         return n;
       });
-    } on Exception catch (e) {
+    } on Exception {
       return TextSpan(text: text, style: style);
     }
     return TextSpan(children: children, style: style);

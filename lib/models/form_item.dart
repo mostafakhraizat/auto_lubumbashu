@@ -3,17 +3,18 @@ import 'package:auto_lubumbashi/utils/custom_text_eiditing_controller.dart';
 import '../utils/data.dart';
 
 class FormItem {
+  List<String> oldImages;
+  List<String> newImages;
+  String? description;
   final List<String> listErrorTexts = [];
   final List<String> listTexts = [];
-  String? oldImagePath;
-  String? newImagePath;
-  String? description;
+
   CustomTextEdittingController controller = CustomTextEdittingController();
   Function? handleTextEdit;
 
   FormItem.item(
-    this.oldImagePath,
-    this.newImagePath,
+    this.newImages,
+    this.oldImages,
     this.description,
   ) {
     controller = CustomTextEdittingController(listErrorTexts: listErrorTexts);
@@ -22,25 +23,20 @@ class FormItem {
 
   FormItem({
     required this.description,
-    required this.oldImagePath,
-    required this.newImagePath,
+    required this.oldImages,
+    required this.newImages,
   });
+  factory FormItem.fromJson(Map<String, dynamic> json) => FormItem(
+    oldImages: List<String>.from(json["oldImages"].map((x) => x)),
+    newImages: List<String>.from(json["newImages"].map((x) => x)),
+    description: json["description"],
+  );
 
-  factory FormItem.fromJson(Map<String, dynamic> json) {
-    return FormItem(
-      oldImagePath: json['oldImagePath'] as String?,
-      newImagePath: json['newImagePath'] as String?,
-      description: json['description'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['oldImagePath'] = oldImagePath;
-    data['newImagePath'] = newImagePath;
-    data['description'] = description;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "oldImages": List<dynamic>.from(oldImages.map((x) => x)),
+    "newImages": List<dynamic>.from(newImages.map((x) => x)),
+    "description": description,
+  };
 
   _handleOnChange(String text) {
     _handleSpellCheck(text, true);
